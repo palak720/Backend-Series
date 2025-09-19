@@ -1,5 +1,5 @@
 
-function checkEven(num){
+/*function checkEven(num){
     if(num%2 === 0){
         console.log(true)
     }else{
@@ -13,4 +13,4 @@ function checkOdd(num){
        console.log(false)
     }
 }
-module.export={checkEven,checkOdd}
+module.export={checkEven,checkOdd}*/
