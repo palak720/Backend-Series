@@ -41,10 +41,15 @@ console.log(isEven(32))//false*/
 // HTTP & Server
 const os =require("os")
 const http=require("http")
+// data---> data.txt
 console.log(http)
+
 const server=http.createServer((req,res)=>{
     if(req.url =="/home"){
-      res.end("Welcome to Home Page")
+      
+      res.setHeader("content-type","text/html")
+      res.statusCode =200;
+        res.end(`<h1>Welcome to Home Page</h1>`)
     }else if(req.url =="/contactus"){
       res.setHeader("content-type","text/html")
       res.statusCode =200;
@@ -52,15 +57,21 @@ const server=http.createServer((req,res)=>{
       res.write("contact us \n")
       res.end("page")
     }
+    else if(req.url =="/data")
+      fs.readFile("./data.txt","utf-8",(err,data)=>{
+    res.setHeader("content-type","text/html")
+      res.statusCode =200;
+    res.end(`<h3>${data}</h3>`)
+  })
     else{
       res.end("This is the other page")
     }
-})
+  })
 
 
 
-server.listen(8080,() =>{
+server.listen(5000,() =>{
   console.log("server started")
 })
 
-console.log(os.cpus().length)
+//console.log(os.cpus().length)
