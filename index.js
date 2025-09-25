@@ -39,7 +39,7 @@ console.log(isEven(32))//false*/
 
 
 // HTTP & Server
-const os =require("os")
+/* const os =require("os")
 const http=require("http")
 // data---> data.txt
 console.log(http)
@@ -74,4 +74,39 @@ server.listen(5000,() =>{
   console.log("server started")
 })
 
-//console.log(os.cpus().length)
+//console.log(os.cpus().length) */
+
+// CRUD Operations
+
+const http = require('http');
+const fs = require("fs")
+const server = http.createServer((req,res)=>{
+  let data = JSON.parse(fs.readFileSync("./db.json", "utf-8"))
+    if(req.url ="/"){
+      res.end("This is the home page")
+
+    }else if(req.url == "/todos" && req.method == "POST"){
+        //logic to insert code
+        //console.log(data)
+        let body = ""
+        req.on("data",(data)=>{
+         body += data;
+        })
+        req.end("end",()=>{
+            //console.log(body)
+            body =JSON.parse(body)
+            data.todos.push(body);
+            fs.writeFileSync("./db.json",JSON.stringify(data))
+            console.log(data)
+            res.end("todos added...")
+        })
+    }else{
+      res.end("This is the other page")
+    }
+})
+
+
+
+server.listen(8081,()=>{
+  console.log("server started")
+})

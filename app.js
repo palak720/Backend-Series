@@ -18,8 +18,8 @@ console.log("After read opreation")
  */
 // read file in sync way
 
-console.log("Before read opreation")
+ /* console.log("Before read opreation")
 let data= fs.readFileSync("./data.txt","utf-8")
 console.log(data)
 console.log("After read opreation")
- 
+  */
