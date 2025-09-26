@@ -84,8 +84,14 @@ const server = http.createServer((req,res)=>{
   let data = JSON.parse(fs.readFileSync("./db.json", "utf-8"))
     if(req.url ="/"){
       res.end("This is the home page")
-
-    }else if(req.url == "/todos" && req.method == "POST"){
+    }
+      // GET the todos
+      else if(req.url =="/todos" && req.method =="GET"){
+       res.setHeader("content-type","application/json")
+        res.end(JSON.stringify(data))
+    }
+     // post the todos
+    else if(req.url == "/todos" && req.method == "POST"){
         //logic to insert code
         //console.log(data)
         let body = ""
@@ -95,17 +101,53 @@ const server = http.createServer((req,res)=>{
         req.end("end",()=>{
             //console.log(body)
             body =JSON.parse(body)
+             let newId = data.todos[data.todos.length-1].id+1
+        //console.log(id)
             data.todos.push(body);
             fs.writeFileSync("./db.json",JSON.stringify(data))
-            console.log(data)
+            //console.log(data)
             res.end("todos added...")
         })
-    }else{
+      }
+
+      // update todos
+      else if(req.url.includes("/todos/update/1")&& req.method == "PATCH"){
+        //console.log(req.url.split("/")[3])
+        let todoId = req.url.split("/")[3]
+        let body = "";
+        req.on("data", (data)=>{
+            body += data
+        })
+         req.on("end", ()=>{
+            body = JSON.parse(body)
+            let updatedTodos= data.todos.map((el,i)=>{
+                if(el.id == todoId){
+                    return {...el,...body}
+                }else{
+                    return el
+                }
+            })
+            data.todos = updatedTodos
+            console.log(updatedData)
+            //console.log(data)
+            fs.writeFileSync("./db.json", JSON.stringify(data))
+         })
+        res.end("todos updated")
+      }
+
+      // delete todos
+       else if(req.url.includes("/todos/delete/") && req.method=="DELETE"){
+        let todoId = req.url.split("/")[3]
+        let filtredTodos= data.todos.filter((el,i)=> el.id != todoId)
+        data.todos = filtredTodos
+        fs.writeFileSync("./db.json", JSON.stringify(data))
+        res.end("Todo Deleted")
+    }
+
+    else{
       res.end("This is the other page")
     }
 })
-
-
 
 server.listen(8081,()=>{
   console.log("server started")

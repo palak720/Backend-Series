@@ -1,1 +1,20 @@
 
+{
+  "todos": [
+    {
+  "id":1,
+  "name":"learn backend",
+  "status":false
+},
+{
+   "id":2,
+  "name":"learn firing",
+  "status":false
+},
+{
+ "id":3,
+  "name":"learn  CRUD",
+  "status":false
+}
+]
+}
