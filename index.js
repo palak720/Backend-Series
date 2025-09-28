@@ -76,7 +76,7 @@ server.listen(5000,() =>{
 
 //console.log(os.cpus().length) */
 
-// CRUD Operations
+/*CRUD Operations
 
 const http = require('http');
 const fs = require("fs")
@@ -150,5 +150,41 @@ const server = http.createServer((req,res)=>{
 })
 
 server.listen(8081,()=>{
+  console.log("server started")
+})*/
+
+
+// Express learn
+
+const express =require("express");
+const app =express();
+app.use(express.json());
+const fs =require("fs");
+
+//app.<Method Name>("/<endpoint>",(cbf))
+
+app.get("/home",(res,req)=>{
+  res.send("This is the home page")
+})
+
+app.get("/contactus",(req,res)=>{
+  res.send("This is the contactus page")
+})
+app.post("/todo",(req,res)=>{
+  //directly we get req.body
+  //console.log(req.body)
+  let data =JSON.parse(fs.readFileSync("./db.json","utf-8"));
+  data.todos.push(req.body);
+  fs.writeFileSync("./db.json",JSON.stringify(data))
+  res.send("todo added")
+})
+
+app.get("/todos",(req,res)=>{
+  let data =JSON.parse(fs.readFileSync("./db.json","utf-8"));
+  res.json({msg:"Here is the list of the todos",todos: data})
+});
+
+
+app.listen(8080,()=>{
   console.log("server started")
 })
