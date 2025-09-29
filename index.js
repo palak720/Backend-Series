@@ -158,8 +158,10 @@ server.listen(8081,()=>{
 
 const express =require("express");
 const app =express();
-app.use(express.json());
+const cors =require("cors")
 const fs =require("fs");
+app.use(express.json());
+app.use(cors());
 
 //app.<Method Name>("/<endpoint>",(cbf))
 
@@ -170,9 +172,11 @@ app.get("/home",(res,req)=>{
 app.get("/contactus",(req,res)=>{
   res.send("This is the contactus page")
 })
-app.post("/todo",(req,res)=>{
+app.post("/todos",(req,res)=>{
   //directly we get req.body
   //console.log(req.body)
+  let id=Date.now();
+  let todos ={...req.body,id}
   let data =JSON.parse(fs.readFileSync("./db.json","utf-8"));
   data.todos.push(req.body);
   fs.writeFileSync("./db.json",JSON.stringify(data))
@@ -181,8 +185,39 @@ app.post("/todo",(req,res)=>{
 
 app.get("/todos",(req,res)=>{
   let data =JSON.parse(fs.readFileSync("./db.json","utf-8"));
+  //sending is the form of json
+  //or else browser will throw error is case of frontend
   res.json({msg:"Here is the list of the todos",todos: data})
 });
+
+// we catched the todo by its id and did the updation
+app.patch("/todos/:id", (req,res)=>{
+  //console.log(req.params)
+  //req.body is the  todos updated details
+  let todoId =req.params.id
+  let data =JSON.parse(fs.readFileSync("./db.json","utf-8"));
+  let updatedTodos = data.todos.map((el,i)=>{
+    if(el.id == todoId){
+      return{...el,...req.body}
+    }else{
+      return el;
+    }
+  })
+
+  data.todos=updatedTodos;
+   fs.writeFileSync("./db.json",JSON.stringify(data));
+   res.send("todo updated");
+})
+
+app.delete("/todos/delete/:id",(req,res)=>{
+  let todoId =req.params.id
+  let data =JSON.parse(fs.readFileSync("./db.json","utf-8"));
+  let filtredTodosTodos = data.todos.filter((el,i)=> el.id  !=todoId)
+   data.todos= filtredTodos;
+   fs.writeFileSync("./db.json",JSON.stringify(data));
+   res.send("todo deleted")
+  })
+
 
 
 app.listen(8080,()=>{
